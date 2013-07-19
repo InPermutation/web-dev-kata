@@ -1,15 +1,22 @@
 var fs = require('fs');
 
-function readTweet(file) {
-   var data = file.split("\n").splice(0,3);
-   return {
-       userName: data[0],
-       message: data[1],
-       date: data[2]
-   };
+function readTweets(file) {
+   var fileData = file.split("\n");
+
+   var tweets = [];
+   while(fileData.length > 0) {
+       var data = fileData.splice(0, 4);
+       tweets.push({
+           userName: data[0],
+           message: data[1],
+           date: data[2]
+       });
+   }
+
+   return tweets;
 }
 
-function writeTweet(tweet) {
+function writeTweets(tweets) {
     // LOL Web scale
     fs.writeFileSync('_site/index.html',
         "<!DOCTYPE html>\n" +
@@ -19,11 +26,13 @@ function writeTweet(tweet) {
             "<link rel='stylesheet' type='text/css' href='theme.css' />\n" +
         "</HEAD>" +
         "<BODY>\n" +
-            "\n<DIV CLASS='tweet'>\n" +
+        tweets.map(function(tweet) {
+            return "\n<DIV CLASS='tweet'>\n" +
             "<H1>" + tweet.userName + "</H1>" +
             "<P>" + tweet.message + "</P>" +
             "<time>" + tweet.date + "</time>" +
-            "\n</DIV>\n" +
+            "\n</DIV>\n";
+        }).join('\n') +
         "\n</BODY></HTML>");
 }
 
@@ -31,6 +40,6 @@ function writeTweet(tweet) {
 // LOL Web scale
 var contents = fs.readFileSync('sample-tweets.txt', {'encoding': 'UTF-8'});
 
-var tweet = readTweet(contents);
+var tweets = readTweets(contents);
 
-writeTweet(tweet);
+writeTweets(tweets);
