@@ -16,10 +16,26 @@ function readTweets(file) {
    return tweets;
 }
 
+function linkify(str) {
+    return str.replace(/@\w+|#\w+/g, function(m) {
+        switch(m[0]) {
+            case '@':
+                var username = m.substr(1);
+                return "<a href='https://twitter.com/" + username + "'>" +
+                    m + "</a>";
+            case '#':
+                var hashtag = m.substr(1);
+                return "<a href='https://twitter.com/search/%23" + hashtag + "'>" +
+                    m + "</a>";
+        }
+        return m;
+    });
+}
+
 function formatTweet(tweet) {
     return "\n<DIV CLASS='tweet'>\n" +
-    "<H1>" + tweet.userName + "</H1>" +
-    "<P>" + tweet.message + "</P>" +
+    "<H1>" + linkify(tweet.userName) + "</H1>" +
+    "<P>" + linkify(tweet.message) + "</P>" +
     "<time>" + tweet.date + "</time>" +
     "\n</DIV>\n";
 }
