@@ -1,0 +1,16 @@
+.tweet h1 {
+    margin: 0;
+}
+.tweet p {
+    margin-top: 0;
+    font-weight: bold;
+}
+.tweet {
+    border: 1px solid black;
+    display: inline-block;
+    padding: 10px;
+}
+time {
+    color: #777;
+    font-size: 9pt;
+}
