@@ -73,26 +73,54 @@ function formatDate(str_date) {
 
 function formatTweet(tweet) {
     return "\n<DIV CLASS='tweet'>\n" +
-    "<H1>" + linkify(tweet.userName) + "</H1>" +
+    "<H1><A HREF='/" + tweet.userName + "'>" + tweet.userName + "</A></H1>" +
     "<P>" + linkify(tweet.message) + "</P>" +
     formatDate(tweet.date) +
     "\n</DIV>\n";
 }
 
-function writeTweets(tweets) {
+function writeTweets(tweets, fileName, title) {
+    console.log(fileName);
     // LOL Web scale
-    fs.writeFileSync('_site/index.html',
+    fs.writeFileSync(fileName || '_site/index.html',
         "<!DOCTYPE html>\n" +
         "<HTML>\n" +
         "<HEAD>\n" +
-            "<TITLE>${Microblog} for dummies</TITLE>\n" +
-            "<link rel='stylesheet' type='text/css' href='theme.css' />\n" +
+            "<TITLE>" + (title || "${Microblog} for dummies") + "</TITLE>\n" +
+            "<link rel='stylesheet' type='text/css' href='/theme.css' />\n" +
         "</HEAD>" +
         "<BODY>\n" +
         tweets.map(formatTweet).join('') +
         "\n</BODY></HTML>");
 }
 
+function writeUserPage(userName, userTweets) {
+    if(userTweets.length > 0 && userName) {
+        try{
+            fs.mkdirSync("_site/" + userName);
+        } catch(E) { }
+        writeTweets(userTweets, "_site/" + userName + "/index.html", userName + "'s Page");
+    }
+}
+function writeUserPages(tweets) {
+    tweets.sort(function(A, B) {
+        if(A.userName == B.userName) return 0;
+        if(A.userName > B.userName) return 1;
+        return -1;
+    });
+    var userName;
+    var userTweets = [];
+    for(var i = 0; i < tweets.length; i++) {
+        var tweet = tweets[i];
+        if (tweet.userName != userName) {
+            writeUserPage(userName, userTweets);
+            userName = tweet.userName;
+            userTweets = [];
+        }
+        userTweets.push(tweet);
+    }
+    writeUserPage(userName, userTweets);
+}
 
 // LOL Web scale
 var contents = fs.readFileSync('sample-tweets.txt', {'encoding': 'UTF-8'});
@@ -100,3 +128,4 @@ var contents = fs.readFileSync('sample-tweets.txt', {'encoding': 'UTF-8'});
 var tweets = readTweets(contents);
 
 writeTweets(tweets);
+writeUserPages(tweets);
