@@ -16,6 +16,14 @@ function readTweets(file) {
    return tweets;
 }
 
+function formatTweet(tweet) {
+    return "\n<DIV CLASS='tweet'>\n" +
+    "<H1>" + tweet.userName + "</H1>" +
+    "<P>" + tweet.message + "</P>" +
+    "<time>" + tweet.date + "</time>" +
+    "\n</DIV>\n";
+}
+
 function writeTweets(tweets) {
     // LOL Web scale
     fs.writeFileSync('_site/index.html',
@@ -26,13 +34,7 @@ function writeTweets(tweets) {
             "<link rel='stylesheet' type='text/css' href='theme.css' />\n" +
         "</HEAD>" +
         "<BODY>\n" +
-        tweets.map(function(tweet) {
-            return "\n<DIV CLASS='tweet'>\n" +
-            "<H1>" + tweet.userName + "</H1>" +
-            "<P>" + tweet.message + "</P>" +
-            "<time>" + tweet.date + "</time>" +
-            "\n</DIV>\n";
-        }).join('\n') +
+        tweets.map(formatTweet).join('') +
         "\n</BODY></HTML>");
 }
 
