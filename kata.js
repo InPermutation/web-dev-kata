@@ -40,6 +40,11 @@ const WEEKS = 7*DAYS;
 const MONTHS = 30*DAYS;
 const YEARS = 365*DAYS;
 
+function pluralize(number, label) {
+    if(number == 1) { return "one " + label; }
+    return number + " " + label + "s";
+}
+
 function formatDate(str_date) {
    var time = new Date(str_date).getTime();
    var now = new Date().getTime();
@@ -50,17 +55,17 @@ function formatDate(str_date) {
    if(diff < 1*MINUTES) {
        result = "Less than a minute ago";
    } else if(diff < 1*HOURS) {
-       result = "About " + Math.floor(diff / MINUTES) + " minutes ago";
+       result = "About " + pluralize(Math.floor(diff / MINUTES), "minute") + " ago";
    } else if(diff < 1*DAYS) {
-       result = "About " + Math.floor(diff / HOURS) + " hours ago";
+       result = "About " + pluralize(Math.floor(diff / HOURS), "hour") + " ago";
    } else if(diff < 1*WEEKS) {
-       result = "About " + Math.floor(diff / DAYS) + " days ago";
+       result = "About " + pluralize(Math.floor(diff / DAYS), "day") + " ago";
    } else if(diff < 1*MONTHS) {
-       result = "About " + Math.floor(diff / WEEKS) + " weeks ago";
+       result = "About " + pluralize(Math.floor(diff / WEEKS), "week") + " ago";
    } else if(diff < 1*YEARS) {
-       result = "About " + Math.floor(diff / MONTHS) + " months ago";
+       result = "About " + pluralize(Math.floor(diff / MONTHS), "month") + " ago";
    } else {
-       result = "More than " + Math.floor(diff / YEARS) + " years ago";
+       result = "More than " + pluralize(Math.floor(diff / YEARS), "year") + " ago";
    }
 
    return "<time datetime='" + str_date + "'>" + result + "</time>\n";
